@@ -8,6 +8,8 @@ import { UsersRepository } from './users.repository';
 import { User } from './users.model';
 import * as bcrypt from 'bcryptjs';
 import { UserRolesEnum, UserStatusEnum } from 'src/constants/enums';
+import { UserDto } from './dto/user.dto';
+import { base64Encode } from 'src/utils';
 
 @Injectable()
 export class UsersService {
@@ -28,6 +30,14 @@ export class UsersService {
 
   getUsersByProperty(property: keyof User, value: any): User[] {
     return this.usersRepository.findBy(property, value);
+  }
+
+  getUserByEmail(email: string): User {
+    const user = this.usersRepository.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+    return user;
   }
 
   async createUser(userDto: Partial<User>): Promise<User> {
@@ -80,5 +90,17 @@ export class UsersService {
 
   deleteUser(id: string): boolean {
     return this.usersRepository.delete(id);
+  }
+
+  // Convert user object to UserDto
+  toUserDto(user: User): UserDto {
+    return {
+      id: base64Encode(user.id),
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      status: user.status,
+    };
   }
 }

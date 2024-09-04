@@ -10,6 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { base64Decode } from 'src/utils';
 
 @Controller('users')
 export class UsersController {
@@ -27,7 +28,8 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.getUserById(id);
+    const decodedId = base64Decode(id);
+    return this.usersService.getUserById(decodedId);
   }
 
   @Patch(':id')
@@ -37,6 +39,7 @@ export class UsersController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.deleteUser(id);
+    const decodedId = base64Decode(id);
+    return this.usersService.deleteUser(decodedId);
   }
 }
