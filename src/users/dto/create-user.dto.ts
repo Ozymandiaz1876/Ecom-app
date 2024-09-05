@@ -6,21 +6,21 @@ export class CreateUserDto {
   @Transform(lowerCaseTransformer)
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  public email: string;
 
   @MinLength(6)
   @IsNotEmpty()
-  password: string;
+  public password: string;
 
   @IsNotEmpty()
-  firstName: string;
+  public irstName: string;
 
   @IsNotEmpty()
-  lastName: string;
+  public lastName: string;
 
   @IsOptional()
-  role?: string;
+  public role?: string;
 
   @IsOptional()
-  status?: string;
+  public status?: string;
 }

@@ -7,21 +7,21 @@ export class UpdateUserDto {
   @Transform(lowerCaseTransformer)
   @IsOptional()
   @IsEmail()
-  email?: string;
+  public email?: string;
 
   @IsOptional()
   @MinLength(6)
-  password?: string;
+  public password?: string;
 
   @IsOptional()
-  firstName?: string;
+  public firstName?: string;
 
   @IsOptional()
-  lastName?: string;
+  public lastName?: string;
 
   @IsOptional()
-  role?: string;
+  public role?: string;
 
   @IsOptional()
-  status: string;
+  public status: string;
 }

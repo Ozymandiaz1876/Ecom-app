@@ -5,10 +5,16 @@ import { OrderStatusEnum } from 'src/constants/enums/OrderStatus.enum';
 import { PlaceOrderDto } from './dto/place-order.dto';
 import { AddItemDto } from './dto/add-item.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { CouponsService } from 'src/coupons/coupons.service';
+import { ProductsService } from 'src/products/products.service';
 
 @Injectable()
 export class OrdersService {
-  constructor(private readonly ordersRepository: OrdersRepository) {}
+  constructor(
+    private readonly ordersRepository: OrdersRepository,
+    private readonly couponsService: CouponsService,
+    private readonly productsService: ProductsService,
+  ) {}
 
   getAllOrders(): Order[] {
     return this.ordersRepository.findAll();
@@ -88,19 +94,28 @@ export class OrdersService {
       throw new NotFoundException('Invalid order');
     }
 
-    // Calculate total order amount, for now lets assume every order is of 100
-    //TODO update the logic to get the item price from products module
+    // Calculate total order amount
     pendingOrder.totalAmount = pendingOrder.items.reduce(
-      (total, item) => total + item.quantity * 100,
+      (total, item) =>
+        total +
+        item.quantity * this.productsService.getProductById(item.itemId).price,
       0,
     );
 
     // Apply discount if a valid discount code is provided
     if (discountCode) {
-      // assuming for now discount code is always valid
-      // TODO validate discount code once discount module is created, add login for nth order as well
+      const { isValid, discount } = this.couponsService.validateCoupon(
+        discountCode,
+        orderId,
+      );
+      if (!isValid) {
+        throw new NotFoundException('Invalid coupon code');
+      }
       pendingOrder.discountCode = discountCode;
-      pendingOrder.finalAmount = pendingOrder.totalAmount * 0.9; //TODO for now taking 10% discount, update logic once discount module is created
+
+      // remove whatever percentage of the total amount is coming from coupon
+      pendingOrder.finalAmount =
+        pendingOrder.totalAmount - pendingOrder.totalAmount * (discount / 100);
     } else {
       pendingOrder.finalAmount = pendingOrder.totalAmount;
     }

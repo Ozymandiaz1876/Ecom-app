@@ -3,15 +3,15 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class AddItemDto {
   @IsString()
   @IsNotEmpty()
-  itemId: string;
+  public itemId: string;
 
   @IsNumber()
-  quantity: number;
+  public quantity: number;
 
   // only need one of these, for adding first item, need userId, after that orderId
   @IsString()
-  orderId?: string;
+  public orderId?: string;
 
   @IsString()
-  userId?: string;
+  public userId?: string;
 }
