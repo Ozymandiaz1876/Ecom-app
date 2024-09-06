@@ -9,7 +9,6 @@ import { User } from './users.model';
 import * as bcrypt from 'bcryptjs';
 import { UserRolesEnum, UserStatusEnum } from 'src/constants/enums';
 import { UserDto } from './dto/user.dto';
-import { base64Encode } from 'src/utils';
 
 @Injectable()
 export class UsersService {
@@ -95,7 +94,7 @@ export class UsersService {
   // Convert user object to UserDto
   toUserDto(user: User): UserDto {
     return {
-      id: base64Encode(user.id),
+      id: user.id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,

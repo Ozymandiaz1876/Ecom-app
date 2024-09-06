@@ -10,11 +10,11 @@ export class UsersRepository {
     return this.users;
   }
 
-  findOne(id: string): User {
+  findOne(id: string): User | undefined {
     return this.users.find((user) => user.id === id);
   }
 
-  findByEmail(email: string): User {
+  findByEmail(email: string): User | undefined {
     const user = this.users.find((user) => user.email === email);
     return user;
   }

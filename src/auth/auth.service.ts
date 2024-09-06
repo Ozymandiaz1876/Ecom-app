@@ -12,9 +12,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import { AllConfigType } from '../config/config.type';
-
 import { User } from '../users/users.model';
-import { base64Encode } from 'src/utils';
 
 @Injectable()
 export class AuthService {
@@ -118,7 +116,7 @@ export class AuthService {
       token,
       tokenExpires,
       user: {
-        id: base64Encode(id),
+        id,
         email,
         firstName,
         lastName,

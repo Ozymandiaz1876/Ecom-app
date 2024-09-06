@@ -11,7 +11,6 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { base64Decode } from 'src/utils';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserRolesEnum } from 'src/constants/enums';
@@ -38,8 +37,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    const decodedId = base64Decode(id);
-    return this.usersService.getUserById(decodedId);
+    return this.usersService.getUserById(id);
   }
 
   @UseGuards(JwtAuthGuard, RoleGuard)
@@ -53,7 +51,6 @@ export class UsersController {
   @Roles(UserRolesEnum.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    const decodedId = base64Decode(id);
-    return this.usersService.deleteUser(decodedId);
+    return this.usersService.deleteUser(id);
   }
 }

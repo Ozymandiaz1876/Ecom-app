@@ -12,10 +12,10 @@ export class OrdersRepository {
     return this.orders;
   }
 
-  findOne(id: string): Order {
+  findOne(id: string): Order | undefined {
     return this.orders.find((order) => order.id === id);
   }
-  findById(id: string): Order {
+  findById(id: string): Order | undefined {
     const order = this.orders.find((order) => order.id === id);
     return order;
   }

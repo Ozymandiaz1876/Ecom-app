@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrdersRepository } from './orders.repository';
 import { Order } from './orders.model';
 import { OrderStatusEnum } from 'src/constants/enums/OrderStatus.enum';
@@ -12,6 +17,7 @@ import { ProductsService } from 'src/products/products.service';
 export class OrdersService {
   constructor(
     private readonly ordersRepository: OrdersRepository,
+    @Inject(forwardRef(() => CouponsService))
     private readonly couponsService: CouponsService,
     private readonly productsService: ProductsService,
   ) {}
@@ -50,7 +56,7 @@ export class OrdersService {
     }
 
     // Check if the user has a pending order
-    let pendingOrder: Order;
+    let pendingOrder;
     if (userId) {
       pendingOrder = this.ordersRepository
         .findByUserId(userId)

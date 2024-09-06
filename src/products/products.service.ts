@@ -1,13 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductsRepository } from './products.repository';
 import { Product } from './products.model';
-
 @Injectable()
 export class ProductsService {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
   getAllProducts(): Product[] {
-    return this.productsRepository.findAll();
+    const products = this.productsRepository.findAll();
+    return products.map((product) => {
+      return {
+        ...product,
+        id: product.id,
+      };
+    });
   }
 
   getProductById(id: string): Product {

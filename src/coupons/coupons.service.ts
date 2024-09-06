@@ -1,15 +1,20 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CouponsRepository } from './coupons.repository';
 import { Coupon } from './coupons.model';
 import { generate } from 'voucher-code-generator';
 import { OrdersService } from 'src/orders/orders.service';
-import { base64Decode } from 'src/utils';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 
 @Injectable()
 export class CouponsService {
   constructor(
     private readonly couponsRepository: CouponsRepository,
+    @Inject(forwardRef(() => OrdersService))
     private readonly ordersService: OrdersService,
   ) {}
 
@@ -49,20 +54,24 @@ export class CouponsService {
       );
     }
 
+    let couponExpiration: number;
+
     if (!couponDto.expiration) {
-      // Default expiration: 30 days from now
-      couponDto.expiration = Date.now() + 30 * 24 * 60 * 60 * 1000;
+      // if no expiration passed, default expiration: 30 days from now
+      couponExpiration = Date.now() + 30 * 24 * 60 * 60 * 1000;
+    } else {
+      couponExpiration = Math.floor(
+        new Date(couponDto.expiration).getTime() / 1000,
+      );
     }
 
     // if no order nmumber passed, coupon will be applied to every 10th order
     if (!couponDto.nthOrderValidity) {
       couponDto.nthOrderValidity = 10;
     }
-    const coupon = this.couponsRepository.create(couponDto);
-
-    return {
-      ...coupon,
-      id: base64Decode(coupon.id),
-    };
+    return this.couponsRepository.create({
+      ...couponDto,
+      expiration: couponExpiration,
+    });
   }
 }
