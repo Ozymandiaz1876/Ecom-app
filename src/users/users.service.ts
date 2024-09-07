@@ -12,7 +12,25 @@ import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(private readonly usersRepository: UsersRepository) {
+    // seed user and admin user
+    this.createUser({
+      firstName: 'admin',
+      lastName: 'admin',
+      email: 'admin@email.com',
+      password: 'admin',
+      role: UserRolesEnum.ADMIN,
+      status: UserStatusEnum.ACTIVE,
+    });
+    this.createUser({
+      firstName: 'user',
+      lastName: 'user',
+      email: 'user@email.com',
+      password: 'password',
+      role: UserRolesEnum.USER,
+      status: UserStatusEnum.ACTIVE,
+    });
+  }
 
   getAllUsers(): User[] {
     return this.usersRepository.findAll();
@@ -80,7 +98,7 @@ export class UsersService {
       incomingPayloadClone.role = UserRolesEnum.USER;
     }
 
-    return this.usersRepository.create(userDto);
+    return this.usersRepository.create(incomingPayloadClone);
   }
 
   updateUser(id: string, updateUserDto: Partial<User>): User {

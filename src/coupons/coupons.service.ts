@@ -43,9 +43,16 @@ export class CouponsService {
 
   createCoupon(couponDto: CreateCouponDto): Coupon {
     if (!couponDto.couponCode) {
-      // if not coupon code passed, generate one
+      // if no coupon code passed, generate one
       const [voucher] = generate({ length: 8, count: 1 });
       couponDto.couponCode = voucher;
+    } else {
+      const coupon = this.couponsRepository.findOneByCode(couponDto.couponCode);
+      if (coupon) {
+        throw new UnprocessableEntityException(
+          `Coupon with code ${couponDto.couponCode} already exists`,
+        );
+      }
     }
 
     if (couponDto.discountPercent > 100 || couponDto.discountPercent <= 0) {
@@ -73,5 +80,9 @@ export class CouponsService {
       ...couponDto,
       expiration: couponExpiration,
     });
+  }
+
+  getAllCoupons(): Coupon[] {
+    return this.couponsRepository.findAll();
   }
 }

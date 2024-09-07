@@ -12,6 +12,13 @@ import { CreateCouponDto } from './dto/create-coupon.dto';
 export class CouponsController {
   constructor(private readonly couponsService: CouponsService) {}
 
+  @Get()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(UserRolesEnum.ADMIN)
+  getAllCoupons(): Coupon[] {
+    return this.couponsService.getAllCoupons();
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(UserRolesEnum.ADMIN)

@@ -23,6 +23,7 @@ export class AuthService {
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
+    console.log(loginDto);
     const user = this.usersService.getUserByEmail(loginDto.email);
 
     if (!user) {
