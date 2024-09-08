@@ -1,0 +1,23 @@
+# Base image
+FROM node:18-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy application dependency manifests to the container image.
+COPY --chown=node:node package*.json yarn.lock ./
+
+# Install app dependencies using Yarn
+RUN yarn install --frozen-lockfile
+
+# Bundle app source
+COPY --chown=node:node . .
+
+# Copy the .env files
+COPY .env.local ./
+
+# Expose the port on which the app will run
+EXPOSE 3000
+
+# Start the server using the production build
+CMD ["yarn", "start:dev"]

@@ -1,0 +1,24 @@
+services:  
+  app:
+    container_name: app
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - AUTH_JWT_SECRET : secret
+      - AUTH_JWT_TOKEN_EXPIRES_IN : 1d
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    restart: "unless-stopped"
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local
