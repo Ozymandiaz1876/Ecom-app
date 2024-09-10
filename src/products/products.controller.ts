@@ -5,7 +5,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorators';
 import { UserRolesEnum } from 'src/constants/enums';
-import { base64Decode } from 'src/utils';
 
 @Controller('products')
 export class ProductsController {
@@ -20,9 +19,7 @@ export class ProductsController {
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   getProductById(@Param('id') id: string): Product {
-    const decodedId = base64Decode(id);
-
-    return this.productsService.getProductById(decodedId);
+    return this.productsService.getProductById(id);
   }
 
   @Post()

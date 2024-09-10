@@ -5,7 +5,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorators';
 import { UserRolesEnum } from 'src/constants/enums';
-import { base64Decode } from 'src/utils';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 
 @Controller('coupons')
@@ -32,7 +31,6 @@ export class CouponsController {
     @Query('couponCode') couponCode: string,
     @Query('orderId') orderId: string,
   ): { discount: number; isValid: boolean } {
-    const decodedOrderId = base64Decode(orderId);
-    return this.couponsService.validateCoupon(couponCode, decodedOrderId);
+    return this.couponsService.validateCoupon(couponCode, orderId);
   }
 }
